@@ -1,20 +1,18 @@
-# multinomial logistic regression
+# multinomial logistic regressions
 
-# adding a combined fatal/serious binary column 
-df_recoded <- df_recoded %>%
-  mutate(severity_combined = ifelse(accident_severity %in% 
-                                      c("Serious", "Fatal"),
-                                    "Fatal/Serious", "Slight"))
+### Model 1
+
 
 # creating dataframe for modelling
 df_lr3 <- df_recoded %>%
   filter(accident_year.x == 2023, !is.na(road_surface_conditions), !is.na(urban_or_rural_area)) %>%
   mutate(
-    severity_combined = factor(severity_combined, levels = c("Slight", "Fatal/Serious")),
+    severity_combined = factor(severity_combined, levels = c("Slight", "Severe")),
     road_surface_conditions = factor(road_surface_conditions),
     urban_or_rural_area = factor(urban_or_rural_area),
-    binaryseverity = as.numeric(severity_combined == "Fatal/Serious")  # Binary target
+    binaryseverity = as.numeric(severity_combined == "Severe")  # Binary target
   )
+
 
 # 70/30 train/test split
 train_size <- 0.7
@@ -32,7 +30,7 @@ combined_model <- glm(
 probabilities_combined <- predict(combined_model, newdata = df_test, type = "response")
 
 # Convert probabilities to class predictions
-threshold <- 0.5  # Default threshold
+threshold <- 0.5
 predictions_combined <- ifelse(probabilities_combined > threshold, 1, 0)
 
 # Evaluate model performance
@@ -46,12 +44,12 @@ confusion <- confusionMatrix(
 )
 print(confusion)
 
-# accuracy is 71%, 100% sensitivity and 0% specificity
+# 71% accuracy, 100% sensitivity and 0% specificity
 
 
 
 
-#re-training on oversampled data:
+### Model 2 - oversampling minority class
 df_train$binaryseverity <- as.factor(df_train$binaryseverity)
 
 oversampled_multi_data <- upSample(
@@ -79,7 +77,7 @@ multi_predictions_oversamp <- ifelse(
 )	
 print(multi_predictions_oversamp)
 
-df_test$binaryseverity <- df_test$severity_combined == 'Fatal/Serious'
+df_test$binaryseverity <- df_test$severity_combined == 'Severe'
 df_test$binaryseverity <- df_test$binaryseverity * 1 
 
 multi_classification_error <- mean(
@@ -100,9 +98,7 @@ print(confusion_oversamp)
 
 
 
-
-# retry with under-sampling the majority class
-
+### Model 3 - undersampling majority class
 undersampled_multi_data <- downSample(
   x = df_train[, setdiff(names(df_train), "binaryseverity")],
   y = df_train$binaryseverity,
@@ -130,7 +126,7 @@ multi_predictions_undersamp <- ifelse(
 )	
 print(multi_predictions_undersamp)
 
-df_test$binaryseverity <- df_test$severity_combined == 'Fatal/Serious'
+df_test$binaryseverity <- df_test$severity_combined == 'Severe'
 df_test$binaryseverity <- df_test$binaryseverity * 1 
 
 multi_classification_error <- mean(

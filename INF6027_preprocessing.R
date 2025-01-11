@@ -67,7 +67,7 @@ df_recoded <- df_sub_2012 %>%
 df_recoded <- df_recoded %>%
   mutate(severity_combined = ifelse(accident_severity %in%
                                       c("Serious", "Fatal"),
-                                    "Fatal/Serious", "Slight"))
+                                    "Severe", "Slight"))
 
 
 # saving the subset for easier access

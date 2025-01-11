@@ -1,4 +1,4 @@
-# tables and visualisations
+# tables and visualizations
 
 # these dataframes required for table 1 and figure 1:
 accidents_by_severity_comb_year <- df_recoded %>% 
@@ -6,19 +6,19 @@ accidents_by_severity_comb_year <- df_recoded %>%
   summarise(accident_count = n(), .groups="drop")%>%
   filter(accident_year.x %in% c(2012, 2023))
 
-percentage_change_severity2 <- accidents_by_severity_comb_year %>%
+percentage_change_severity <- accidents_by_severity_comb_year %>%
   pivot_wider(names_from = accident_year.x, values_from = accident_count, names_prefix="year_") %>%
   mutate(count_change = (year_2023 - year_2012)
   ) %>%
   mutate(
-    percentage_change_severity2 = ((year_2023 - year_2012) / year_2012) * 100
+    percentage_change_severity = ((year_2023 - year_2012) / year_2012) * 100
   )
 
 # run this line for Table 1:
-view(percentage_change_severity2)
+view(percentage_change_severity)
 
 # Figure 1:
-severity_perc_change2 <- ggplot(percentage_change_severity2, aes(x = severity_combined, y = percentage_change_severity2, fill = severity_combined)) +
+severity_perc_change <- ggplot(percentage_change_severity, aes(x = severity_combined, y = percentage_change_severity, fill = severity_combined)) +
   geom_bar(stat = "identity", width = 0.7) +
   labs(
     title = "Percentage Change in UK Road Accidents (2012 vs 2023)",
@@ -38,9 +38,9 @@ severity_perc_change2 <- ggplot(percentage_change_severity2, aes(x = severity_co
         axis.title.x = element_text(face = "bold"),
         axis.title.y = element_text(face = "bold"))
 
-severity_perc_change2
+severity_perc_change
 
-ggsave("severity_perc_change2.png", plot = severity_perc_change2, width=8, height=4.8, dpi = 300)
+ggsave("severity_perc_change.png", plot = severity_perc_change2, width=8, height=4.8, dpi = 300)
 
 
 
@@ -49,7 +49,7 @@ ggsave("severity_perc_change2.png", plot = severity_perc_change2, width=8, heigh
 # these dataframes required for table 2 and figure 2: 
 accidents_by_conditions_year <- df_recoded %>% 
   group_by(road_surface_conditions, accident_year.x, severity_combined) %>% 
-  filter(accident_year.x %in% c(2012, 2023), severity_combined == "Fatal/Serious",
+  filter(accident_year.x %in% c(2012, 2023), severity_combined == "Severe",
          !is.na(road_surface_conditions))%>%
   summarise(accident_count = n(), .groups="drop")
 
@@ -71,7 +71,7 @@ severity_by_road <- df_recoded %>%
 percentage_serious_by_condition <- severity_by_road %>%
   pivot_wider(names_from = severity_combined, values_from = accident_count, values_fill = 0) %>%
   mutate(
-    percentage_serious = (`Fatal/Serious` / (`Fatal/Serious` + Slight)) * 100
+    percentage_serious = (`Severe` / (`Severe` + Slight)) * 100
   ) 
 
 percentage_serious_by_condition <- 
@@ -85,9 +85,9 @@ perc_serious_by_con <- ggplot(percentage_serious_by_condition,
            y=percentage_serious))+
   geom_bar(stat = "identity", width = 0.7, fill="#D55E00") +
   labs(
-    title = "Percentage Fatal or Serious by Road Condition",
+    title = "Percentage of Accidents that are Severe by Road Condition",
     x = "Road Condition",
-    y = "Percentage Fatal/Serious",
+    y = "Percentage Severe",
     caption="GOV.UK Road Safety Data"
   ) +
   geom_hline(yintercept=0, colour="black", size=0.5)+
@@ -112,7 +112,7 @@ ggsave("perc_serious_by_con.png", plot = perc_serious_by_con, width=8, height=4.
 # dataframes required for table 3 and figure 3:
 accidents_by_rurality_year <- df_recoded %>% 
   group_by(urban_or_rural_area, accident_year.x, severity_combined) %>% 
-  filter(accident_year.x %in% c(2012, 2023), severity_combined == "Fatal/Serious",
+  filter(accident_year.x %in% c(2012, 2023), severity_combined == "Severe",
          !is.na(urban_or_rural_area))%>%
   summarise(accident_count = n(), .groups="drop")
 
@@ -135,7 +135,7 @@ severity_by_area <- df_recoded %>%
 percentage_serious_by_area <- severity_by_area %>%
   pivot_wider(names_from = severity_combined, values_from = accident_count, values_fill = 0) %>%
   mutate(
-    percentage_serious = (`Fatal/Serious` / (`Fatal/Serious` + Slight)) * 100
+    percentage_serious = (`Severe` / (`Severe` + Slight)) * 100
   ) 
 
 percentage_serious_by_area <- 
@@ -152,9 +152,9 @@ bar_rurality <- ggplot(percentage_serious_by_area,
            fill=urban_or_rural_area))+
   geom_bar(stat = "identity", width = 0.7) +
   labs(
-    title = "Percentage Fatal or Serious by Rurality",
+    title = "Percentage of Accidents that are Severe by Rurality",
     x = "Rurality",
-    y = "Percentage Fatal/Serious",
+    y = "Percentage Severe",
     caption="GOV.UK Road Safety Data"
   ) +
   geom_hline(yintercept = 0, colour = "black", size = 0.5) +
