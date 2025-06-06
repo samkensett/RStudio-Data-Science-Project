@@ -1,4 +1,4 @@
-The INF6027 repository contains the R code for a project that aims to garner insight into potential risk factors for road accident severity in the UK, based on GOV.UK data from 2012 to 2023. Specifically, this project looks at road conditions and rurality and how these variables relate to accident severity. 
+This repository contains the R code for a project that aims to garner insight into potential risk factors for road accident severity in the UK, based on GOV.UK data from 2012 to 2023. Specifically, this project looks at road conditions and rurality and how these variables relate to accident severity. 
 
 There are three research questions this project aims to answer:
   1.	How has the prevalence of severe road accidents changed in the UK between 2012 and 2023?
