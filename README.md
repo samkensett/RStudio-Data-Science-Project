@@ -1,5 +1,7 @@
 This repository contains the R code for a project that aims to garner insight into potential risk factors for road accident severity in the UK, based on GOV.UK data from 2012 to 2023. Specifically, this project looks at road conditions and rurality and how these variables relate to accident severity. 
 
+The Road Accidents pdf file summarises the project and its results and findings.
+
 There are three research questions this project aims to answer:
   1.	How has the prevalence of severe road accidents changed in the UK between 2012 and 2023?
   2.	How does the prevalence of severe road accidents vary based on road conditions and rurality?
